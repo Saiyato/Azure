@@ -2,7 +2,7 @@ id: 2e24704b-2c51-46b1-875f-0e9ed3d6ed35
 name: Detect MFASweep usage
 description: |
   This rule will trigger once MFASweep is used against an existing account
-severity: Low
+severity: Medium
 requiredDataConnectors:
   - connectorId: AzureActiveDirectory
     dataTypes:
@@ -11,6 +11,8 @@ queryFrequency: 5M
 queryPeriod: 5M
 triggerOperator: gt
 triggerThreshold: 0
+tags:
+  - MFASweep
 tactics:
   - InitialAccess
 relevantTechniques:
@@ -38,3 +40,11 @@ query: |
     or (ClientAppUsed == "Exchange Web Services" and count_ >= 1)
   | summarize StartTime = min(StartTime), EndTime = max(EndTime), count() by Identity, AlternateSignInName, ResultType, ResultDescription
   | where count_ == 4
+eventGroupingSettings:
+  aggregationKind: SingleAlert
+incidentConfiguration:
+  createIncident: true
+  groupingConfiguration:
+    enabled: false
+version: 1.0.1
+kind: Scheduled
